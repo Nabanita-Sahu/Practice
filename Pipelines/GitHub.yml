@@ -12,25 +12,35 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    steps:
-      # Step 1: Checkout the code
-      - name: Checkout code
-        uses: actions/checkout@v3
+variables:
+  #Environment being deployed to
+  environmentPrefix: 'Practice'
 
-      # Step 2: Set up .NET SDK
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: 6.0  # Use the same version as your project
+  # Function app variables
+  functionAppProjectName: 'Practice.Functions'
+  functionAppWorekingDirectory: '$(Build.sourcesDirectory)/src/function-apps'
+  functionAppTestProjectName: 'Practice.Functions.Tests'
+  functionAppTestDirectory: '$(Build.sourcesDirectory)/src/tests'
 
-      # Step 3: Restore dependencies
-      - name: Restore dependencies
-        run: dotnet restore
+steps:
+  # Step 1: Checkout the code
+  - name: Checkout code
+    uses: actions/checkout@v3
 
-      # Step 4: Build the project
-      - name: Build
-        run: dotnet build --no-restore
+  # Step 2: Set up .NET SDK
+  - name: Setup .NET
+    uses: actions/setup-dotnet@v3
+    with:
+      dotnet-version: 6.0  # Use the same version as your project
 
-      # Step 5: Run tests
-      - name: Run tests
-        run: dotnet test --no-build --verbosity normal
+  # Step 3: Restore dependencies
+  - name: Restore dependencies
+    run: dotnet restore
+
+  # Step 4: Build the project
+  - name: Build
+    run: dotnet build --no-restore
+
+  # Step 5: Run tests
+  - name: Run tests
+    run: dotnet test --no-build --verbosity normal
