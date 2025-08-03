@@ -1,6 +1,6 @@
 properties([
     parameters([
-        string(name: 'BRANCH_NAME', defaultValue: 'main', description: 'Enter the branch to build')
+        string(name: 'BRANCH_NAME', defaultValue: 'BranchA', description: 'Enter the branch to build')
     ])
 ])
 
@@ -22,21 +22,22 @@ pipeline {
         stage('Build') {
             steps {
                 echo "🔧 Running build script..."
-                sh './build.sh'
+                // Replace below with Windows batch command equivalent if build.sh doesn't exist or isn't usable
+                bat 'echo Simulating build process...'
             }
         }
 
         stage('Test') {
             steps {
                 echo "🧪 Running tests..."
-                // Add test commands here if required
+                bat 'echo Simulating tests...'
             }
         }
 
         stage('Deploy') {
             steps {
                 echo "🚀 Deploying the application..."
-                // Add deployment steps here
+                bat 'echo Simulating deployment...'
             }
         }
     }
