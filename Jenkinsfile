@@ -14,15 +14,18 @@ pipeline {
     stages {
         stage('Clone') {
             steps {
-                echo "🔁 Cloning repository from branch: ${params.BRANCH_NAME}"
-                git branch: "${params.BRANCH_NAME}", url: 'https://github.com/Nabanita-Sahu/Practice.git'
+                script {
+                    // Sanitize branch name to remove leading "*/" if present
+                    def safeBranch = params.BRANCH_NAME.replaceFirst(/\*\//, '')
+                    echo "🔁 Cloning repository from branch: ${safeBranch}"
+                    git branch: "${safeBranch}", url: 'https://github.com/Nabanita-Sahu/Practice.git'
+                }
             }
         }
 
         stage('Build') {
             steps {
                 echo "🔧 Running build script..."
-                // Replace below with Windows batch command equivalent if build.sh doesn't exist or isn't usable
                 bat 'echo Simulating build process...'
             }
         }
