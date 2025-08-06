@@ -1,7 +1,6 @@
 properties([
     parameters([
-        //string(name: 'BRANCH_NAME', defaultValue: 'BranchA', description: 'Enter the branch to build')
-        string(defaultValue: 'BranchA')
+        string(name: 'BRANCH_NAME', defaultValue: 'BranchA', description: 'Enter the branch to build')
     ])
 ])
 
