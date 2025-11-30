@@ -1,43 +1,43 @@
 trigger:
   branches:
     include:
-      - BranchA  # Runs pipeline when code is pushed to main branch
+      - BranchA  # Runs pipeline when code is pushed to BranchA
 
 pool:
-  name: DevOpsPracticePool  # Use your self-hosted agent pool
+  name: DevOpsPracticePool  # Self-hosted agent pool
 
 steps:
 - task: UseDotNet@2
   displayName: 'Install .NET SDK'
   inputs:
     packageType: 'sdk'
-    version: '8.x'  # Specify exact version if needed (e.g., 8.0.x)
+    version: '8.0.x'
     installationPath: $(Agent.ToolsDirectory)/dotnet
 
 - task: DotNetCoreCLI@2
   displayName: 'Restore NuGet packages'
   inputs:
     command: 'restore'
-    projects: '**/*.csproj'
+    projects: 'MyWebApp/MyWebApp.csproj'
 
 - task: DotNetCoreCLI@2
   displayName: 'Build solution'
   inputs:
     command: 'build'
-    projects: '**/*.csproj'
+    projects: 'MyWebApp/MyWebApp.csproj'
     arguments: '--configuration Release'
 
 - task: DotNetCoreCLI@2
   displayName: 'Run unit tests'
   inputs:
     command: 'test'
-    projects: '**/*Tests/*.csproj'
+    projects: 'MyWebApp/MyWebApp.csproj'  # Update if you add a test project later
 
 - task: DotNetCoreCLI@2
   displayName: 'Publish application'
   inputs:
     command: 'publish'
-    projects: '**/*.csproj'
+    projects: 'MyWebApp/MyWebApp.csproj'
     arguments: '--configuration Release --output $(Build.ArtifactStagingDirectory)'
 
 - task: PublishBuildArtifacts@1
