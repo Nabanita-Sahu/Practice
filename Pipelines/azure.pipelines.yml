@@ -1,7 +1,7 @@
 trigger:
   branches:
     include:
-      - main  # Runs pipeline when code is pushed to main branch
+      - BranchA  # Runs pipeline when code is pushed to main branch
 
 pool:
   name: DevOpsPracticePool  # Use your self-hosted agent pool
