@@ -1,43 +1,63 @@
 trigger:
   branches:
     include:
-      - BranchA  # Runs pipeline when code is pushed to BranchA
+      - BranchA   # Change if needed
 
 pool:
-  name: DevOpsPracticePool  # Self-hosted agent pool
+  name: DevOpsPracticePool   # Your self-hosted agent pool
+
+variables:
+  ENVIRONMENT_PREFIX: 'Practice'
+  FUNCTION_APP_PROJECT_NAME: 'Practice.Functions'
+  FUNCTION_APP_WORKING_DIRECTORY: './src/function-apps'
+  FUNCTION_APP_TEST_PROJECT_NAME: 'Practice.Functions.Tests'
+  FUNCTION_APP_TEST_DIRECTORY: './src/tests'
 
 steps:
+# Step 1: Install .NET SDK (6.x to match GitHub workflow)
 - task: UseDotNet@2
   displayName: 'Install .NET SDK'
   inputs:
     packageType: 'sdk'
-    version: '8.0.x'
-    installationPath: $(Agent.ToolsDirectory)/dotnet
+    version: '6.0.x'
 
+# Step 2: Restore dependencies
 - task: DotNetCoreCLI@2
-  displayName: 'Restore NuGet packages'
+  displayName: 'Restore dependencies'
   inputs:
     command: 'restore'
-    projects: 'MyWebApp/MyWebApp.csproj'
+    projects: '**/*.csproj'
 
+# Step 3: Build the project
 - task: DotNetCoreCLI@2
-  displayName: 'Build solution'
+  displayName: 'Build project'
   inputs:
     command: 'build'
-    projects: 'MyWebApp/MyWebApp.csproj'
-    arguments: '--configuration Release'
+    projects: '**/*.csproj'
+    arguments: '--no-restore --configuration Release'
 
+# Step 4: Run tests
 - task: DotNetCoreCLI@2
-  displayName: 'Run unit tests'
+  displayName: 'Run tests'
   inputs:
     command: 'test'
-    projects: 'MyWebApp/MyWebApp.csproj'  # Update if you add a test project later
+    projects: '**/*.Tests.csproj'
+    arguments: '--no-build --verbosity normal'
 
+# Step 5: Publish test results (similar to GitHub upload-artifact)
+- task: PublishTestResults@2
+  displayName: 'Publish test results'
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: '**/TestResults/*.xml'
+    failTaskOnFailedTests: true
+
+# Step 6: Publish build artifacts (equivalent to GitHub upload-artifact)
 - task: DotNetCoreCLI@2
   displayName: 'Publish application'
   inputs:
     command: 'publish'
-    projects: 'MyWebApp/MyWebApp.csproj'
+    projects: '**/*.csproj'
     arguments: '--configuration Release --output $(Build.ArtifactStagingDirectory)'
 
 - task: PublishBuildArtifacts@1
