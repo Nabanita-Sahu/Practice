@@ -1,7 +1,7 @@
 trigger:
   branches:
     include:
-      - BranchA
+      - main
 
 pool:
   name: DevOpsPracticePool
