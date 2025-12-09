@@ -1,10 +1,12 @@
-trigger: none  # Prevent deploy from running on code push
+trigger: none
 
 resources:
   pipelines:
   - pipeline: validation
     source: Nabanita-Sahu.Validate  # Must match the pipeline name exactly
-    trigger: true                   # Automatically trigger deploy after validation succeeds
+    project: PipelineDemo
+    branch: main
+    trigger: true  # Automatically trigger deploy after validation succeeds
 
 pool:
   name: DevOpsPracticePool
@@ -20,18 +22,23 @@ stages:
     - task: DownloadPipelineArtifact@2
       displayName: "Download build artifacts"
       inputs:
-        source: current
+        source: validation
         artifact: drop
         path: $(Pipeline.Workspace)
 
     - script: |
         echo "Starting deployment..."
-        if [ -d "$(Pipeline.Workspace)/drop" ]; then
-          echo "Artifact 'drop' found at: $(Pipeline.Workspace)/drop"
-          echo "Deploying application..."
-          # Add actual deployment commands here (e.g., dotnet publish, az webapp deploy, etc.)
-        else
-          echo "Artifact 'drop' not found. Skipping deployment."
-          exit 1
-        fi
+
+        set ARTIFACT_PATH="$(Pipeline.Workspace)\drop"
+
+        echo Checking for artifact at: %ARTIFACT_PATH%
+
+        if exist %ARTIFACT_PATH% (
+            echo Artifact 'drop' found at: %ARTIFACT_PATH%
+            echo Deploying application...
+            REM Add actual deployment commands here
+        ) else (
+            echo Artifact 'drop' not found. Skipping deployment.
+            exit /b 1
+        )
       displayName: "Deployment Step"
