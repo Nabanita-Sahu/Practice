@@ -1,4 +1,10 @@
-trigger: none   # Deployment should not run automatically
+trigger: none   # Deployment should not run automatically on code push
+
+resources:
+  pipelines:
+  - pipeline: validation
+    source: Nabanita-Sahu.Validate   # ✅ EXACT name of your validate pipeline
+    trigger: true                    # ✅ Auto-run deploy after validate succeeds
 
 pool:
   name: DevOpsPracticePool
@@ -7,23 +13,4 @@ stages:
 - stage: Deploy
   displayName: "Deploy Stage"
   jobs:
-  - job: DeployJob
-    displayName: "Deploy Application"
-    steps:
-
-    # ✅ Correct task for downloading artifacts from another pipeline
-    - task: DownloadPipelineArtifact@2
-      displayName: 'Download build artifacts'
-      inputs:
-        source: 'specific'
-        project: $(System.TeamProject)
-        pipeline: 1              # Validation pipeline ID
-        runVersion: 'latest'
-        artifact: 'drop'         # Must match the artifact name from pipeline 1
-        path: '$(Pipeline.Workspace)'
-
-    # Deployment placeholder
-    - script: |
-        echo "Deploying application..."
-        echo "Artifacts downloaded to $(Pipeline.Workspace)"
-      displayName: "Deployment Step"
+  - job
