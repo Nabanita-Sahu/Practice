@@ -22,7 +22,7 @@ stages:
     - task: DownloadPipelineArtifact@2
       displayName: "Download build artifacts"
       inputs:
-        source: validation
+        pipeline: validation
         artifact: drop
         path: $(Pipeline.Workspace)
 
