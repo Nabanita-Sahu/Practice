@@ -3,10 +3,10 @@ trigger: none
 resources:
   pipelines:
   - pipeline: validation
-    source: Nabanita-Sahu.Validate  # Must match the pipeline name exactly
+    source: Nabanita-Sahu.Validate
     project: PipelineDemo
     branch: main
-    trigger: true  # Automatically trigger deploy after validation succeeds
+    trigger: true
 
 pool:
   name: DevOpsPracticePool
@@ -22,14 +22,14 @@ stages:
     - task: DownloadPipelineArtifact@2
       displayName: "Download build artifacts"
       inputs:
-        pipeline: validation
+        source: current               # ✅ Correct input
         artifact: drop
         path: $(Pipeline.Workspace)
 
     - script: |
         echo "Starting deployment..."
 
-        set ARTIFACT_PATH="$(Pipeline.Workspace)\drop"
+        set ARTIFACT_PATH=$(Pipeline.Workspace)\drop
 
         echo Checking for artifact at: %ARTIFACT_PATH%
 
