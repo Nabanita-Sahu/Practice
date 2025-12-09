@@ -1,0 +1,30 @@
+trigger: none   # Prevent deploy from running on code push
+
+resources:
+  pipelines:
+  - pipeline: validation
+    source: Nabanita-Sahu.Validate   # Must match the pipeline name exactly
+    trigger: true                    # Automatically trigger deploy after validation succeeds
+
+pool:
+  name: DevOpsPracticePool
+
+stages:
+- stage: Deploy
+  displayName: "Deploy Stage"
+  jobs:
+  - job: DeployJob
+    displayName: "Deploy Application"
+    steps:
+
+    - task: DownloadPipelineArtifact@2
+      displayName: "Download build artifacts"
+      inputs:
+        source: current              # Use the triggering validation run
+        artifact: drop               # Must match the artifact name from validation
+        path: $(Pipeline.Workspace)
+
+    - script: |
+        echo "Deploying application..."
+        echo "Artifacts downloaded to $(Pipeline.Workspace)"
+      displayName: "Deployment Step"

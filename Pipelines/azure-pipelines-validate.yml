@@ -1,0 +1,74 @@
+trigger:
+  branches:
+    include:
+      - BranchA
+
+pool:
+  name: DevOpsPracticePool
+
+variables:
+  ENVIRONMENT_PREFIX: 'Practice'
+  FUNCTION_APP_PROJECT_NAME: 'Practice.Functions'
+  FUNCTION_APP_WORKING_DIRECTORY: './src/function-apps'
+  FUNCTION_APP_TEST_PROJECT_NAME: 'Practice.Functions.Tests'
+  FUNCTION_APP_TEST_DIRECTORY: './src/tests'
+  buildConfiguration: 'Release'
+
+stages:
+- stage: Validate
+  displayName: "Build & Test Stage"
+  jobs:
+  - job: BuildAndTest
+    displayName: "Build, Test, and Publish Artifacts"
+    steps:
+
+    # ✅ Install .NET SDK
+    - task: UseDotNet@2
+      displayName: "Install .NET SDK"
+      inputs:
+        packageType: 'sdk'
+        version: '6.0.x'
+
+    # ✅ Restore dependencies
+    - task: DotNetCoreCLI@2
+      displayName: "Restore dependencies"
+      inputs:
+        command: 'restore'
+        projects: '**/*.csproj'
+
+    # ✅ Build solution
+    - task: DotNetCoreCLI@2
+      displayName: "Build project"
+      inputs:
+        command: 'build'
+        projects: '**/*.csproj'
+        arguments: '--no-restore --configuration $(buildConfiguration)'
+
+    # ✅ Run tests
+    - task: DotNetCoreCLI@2
+      displayName: "Run tests"
+      inputs:
+        command: 'test'
+        projects: '**/*.Tests.csproj'
+        arguments: '--no-build --verbosity normal'
+
+    # ✅ Publish test results
+    - task: PublishTestResults@2
+      displayName: "Publish test results"
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '**/TestResults/*.xml'
+        failTaskOnFailedTests: true
+
+    # ✅ Publish application output
+    - task: DotNetCoreCLI@2
+      displayName: "Publish application"
+      inputs:
+        command: 'publish'
+        projects: '**/*.csproj'
+        arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+
+    # ✅ Upload artifacts (modern syntax)
+    - publish: $(Build.ArtifactStagingDirectory)
+      artifact: drop
+      displayName: "Publish build artifacts"
