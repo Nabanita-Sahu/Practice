@@ -1,10 +1,10 @@
 trigger:
   branches:
     include:
-      - BranchA   # Change if needed
+      - BranchA
 
 pool:
-  name: DevOpsPracticePool   # Your self-hosted agent pool
+  name: DevOpsPracticePool
 
 variables:
   ENVIRONMENT_PREFIX: 'Practice'
@@ -12,31 +12,32 @@ variables:
   FUNCTION_APP_WORKING_DIRECTORY: './src/function-apps'
   FUNCTION_APP_TEST_PROJECT_NAME: 'Practice.Functions.Tests'
   FUNCTION_APP_TEST_DIRECTORY: './src/tests'
+  buildConfiguration: 'Release'
 
 steps:
-# Step 1: Install .NET SDK (6.x to match GitHub workflow)
+# Install .NET
 - task: UseDotNet@2
   displayName: 'Install .NET SDK'
   inputs:
     packageType: 'sdk'
     version: '6.0.x'
 
-# Step 2: Restore dependencies
+# Restore
 - task: DotNetCoreCLI@2
   displayName: 'Restore dependencies'
   inputs:
     command: 'restore'
     projects: '**/*.csproj'
 
-# Step 3: Build the project
+# Build
 - task: DotNetCoreCLI@2
   displayName: 'Build project'
   inputs:
     command: 'build'
     projects: '**/*.csproj'
-    arguments: '--no-restore --configuration Release'
+    arguments: '--no-restore --configuration $(buildConfiguration)'
 
-# Step 4: Run tests
+# Test
 - task: DotNetCoreCLI@2
   displayName: 'Run tests'
   inputs:
@@ -44,7 +45,7 @@ steps:
     projects: '**/*.Tests.csproj'
     arguments: '--no-build --verbosity normal'
 
-# Step 5: Publish test results (similar to GitHub upload-artifact)
+# Publish test results
 - task: PublishTestResults@2
   displayName: 'Publish test results'
   inputs:
@@ -52,14 +53,15 @@ steps:
     testResultsFiles: '**/TestResults/*.xml'
     failTaskOnFailedTests: true
 
-# Step 6: Publish build artifacts (equivalent to GitHub upload-artifact)
+# Publish build output
 - task: DotNetCoreCLI@2
   displayName: 'Publish application'
   inputs:
     command: 'publish'
     projects: '**/*.csproj'
-    arguments: '--configuration Release --output $(Build.ArtifactStagingDirectory)'
+    arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
 
+# Upload artifacts
 - task: PublishBuildArtifacts@1
   displayName: 'Publish build artifacts'
   inputs:
