@@ -4,7 +4,7 @@ resources:
   pipelines:
   - pipeline: validation
     source: Nabanita-Sahu.Validate   # ✅ Exact name of your validation pipeline
-    trigger: true                    # ✅ Auto-trigger deploy after validation succeeds
+    trigger: none                    # ✅ Disable auto-trigger to avoid early execution
 
 pool:
   name: DevOpsPracticePool
@@ -17,14 +17,15 @@ stages:
     displayName: "Deploy Application"
     steps:
 
-    # ✅ Correct artifact download using runPipelineName
+    # ✅ Download artifact from specific run ID (build #15)
     - task: DownloadPipelineArtifact@2
       displayName: 'Download build artifacts'
       inputs:
         source: 'specific'
         project: $(System.TeamProject)
-        runPipelineName: Nabanita-Sahu.Validate   # ✅ Use actual pipeline name here
-        runVersion: 'latest'
+        pipeline: <pipeline ID>           # Replace with numeric ID of Nabanita-Sahu.Validate
+        runVersion: 'specific'
+        runId: 15                         # ✅ Use actual run ID from successful validation run
         artifact: 'drop'
         path: '$(Pipeline.Workspace)'
 
