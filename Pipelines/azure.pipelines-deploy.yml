@@ -18,28 +18,29 @@ stages:
   - job: DeployJob
     displayName: "Deploy Application"
     steps:
+      - task: DownloadPipelineArtifact@2
+        displayName: "Download build artifacts"
+        inputs:
+          source: current
+          runVersion: latestFromTriggeringBuild
+          artifact: drop
+          path: $(Pipeline.Workspace)
 
-    - task: DownloadPipelineArtifact@2
-      displayName: "Download build artifacts"
-      inputs:
-        buildType: current
-        artifact: drop
-        path: $(Pipeline.Workspace)
-        runVersion: latestFromTriggeringBuild
+      - script: |
+          echo "Starting deployment..."
 
-    - script: |
-        echo "Starting deployment..."
+          set "ARTIFACT_PATH=$(Pipeline.Workspace)\drop"
 
-        set ARTIFACT_PATH=$(Pipeline.Workspace)\drop
+          echo Checking for artifact at: %ARTIFACT_PATH%
 
-        echo Checking for artifact at: %ARTIFACT_PATH%
+          if exist "%ARTIFACT_PATH%" (
+              echo Artifact 'drop' found at: %ARTIFACT_PATH%
+              echo Deploying application...
+              REM Add actual deployment commands here
+          ) else (
+              echo Artifact 'drop' not found. Skipping deployment.
+              exit /b 1
+          )
 
-        if exist %ARTIFACT_PATH% (
-            echo Artifact 'drop' found at: %ARTIFACT_PATH%
-            echo Deploying application...
-            REM Add actual deployment commands here
-        ) else (
-            echo Artifact 'drop' not found. Skipping deployment.
-            exit /b 1
-        )
-      displayName: "Deployment Step"
+          echo Deployment step completed.
+        displayName: "Deployment Step"
