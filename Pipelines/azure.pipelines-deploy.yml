@@ -3,7 +3,7 @@ trigger: none
 resources:
   pipelines:
   - pipeline: validation
-    source: Nabanita-Sahu.validate
+    source: Nabanita-Sahu.Validate
     trigger: true
 
 pool:
