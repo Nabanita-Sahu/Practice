@@ -22,9 +22,10 @@ stages:
     - task: DownloadPipelineArtifact@2
       displayName: "Download build artifacts"
       inputs:
-        source: current               # ✅ Correct input
+        buildType: current
         artifact: drop
         path: $(Pipeline.Workspace)
+        runVersion: latestFromTriggeringBuild
 
     - script: |
         echo "Starting deployment..."
