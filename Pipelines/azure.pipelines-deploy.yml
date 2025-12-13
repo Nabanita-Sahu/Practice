@@ -32,14 +32,11 @@ stages:
           echo Starting deployment...
 
           echo Agent.WorkFolder = $(Agent.WorkFolder)
-          
-          echo Listing work folder contents:
           dir "$(Agent.WorkFolder)"
 
           echo Listing drop folder contents (if exists):
           dir "$(Agent.WorkFolder)\drop"
 
-          :: Use quotes to handle paths with spaces and use backslashes
           set "ARTIFACT_PATH=$(Agent.WorkFolder)\drop"
 
           echo Checking for artifact at: %ARTIFACT_PATH%
@@ -47,9 +44,11 @@ stages:
           if exist "%ARTIFACT_PATH%" (
             echo Artifact 'drop' found at: %ARTIFACT_PATH%
             echo Deploying application...
-            :: Add your actual deployment command here
+            REM CORRECTED: Use REM instead of :: inside blocks
+            REM Add your deployment command below (e.g., copy, unzip)
+            
           ) else (
-            echo Artifact 'drop' not found at %ARTIFACT_PATH%. Deployment cannot continue.
+            echo Artifact 'drop' not found. Deployment cannot continue.
             exit /b 1
           )
         displayName: "Deployment Step"
