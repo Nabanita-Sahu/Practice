@@ -21,12 +21,12 @@ stages:
       - task: DownloadPipelineArtifact@2
         displayName: "Download build artifacts"
         inputs:
-          buildType: specific
+          source: specific
           project: PipelineDemo
           pipeline: Nabanita-Sahu.Validate
-          runId: 36
+          runVersion: latestFromTriggeringPipeline
           artifact: drop
-          path: $(Pipeline.Workspace)/drop   # ✅ Force artifact into /drop folder
+          path: $(Pipeline.Workspace)/drop   # Force artifact into /drop folder
 
       - script: |
           echo "Starting deployment..."
