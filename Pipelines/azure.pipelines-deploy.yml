@@ -26,19 +26,19 @@ stages:
           pipeline: Nabanita-Sahu.Validate
           runVersion: latest
           artifact: drop
-          path: $(Pipeline.Workspace)/drop
+          path: $(Agent.WorkFolder)\drop     #  Correct path for Windows self‑hosted agent
 
       - script: |
           echo Starting deployment...
 
-          echo Pipeline.Workspace = %Pipeline.Workspace%
-          echo Listing workspace contents:
-          dir "%Pipeline.Workspace%"
+          echo Agent.WorkFolder = %Agent.WorkFolder%
+          echo Listing work folder contents:
+          dir "%Agent.WorkFolder%"
 
           echo Listing drop folder contents (if exists):
-          dir "%Pipeline.Workspace%\drop"
+          dir "%Agent.WorkFolder%\drop"
 
-          set ARTIFACT_PATH=%Pipeline.Workspace%\drop
+          set ARTIFACT_PATH=%Agent.WorkFolder%\drop
 
           echo Checking for artifact at: %ARTIFACT_PATH%
 
