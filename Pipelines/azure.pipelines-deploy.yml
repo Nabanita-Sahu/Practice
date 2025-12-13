@@ -31,24 +31,25 @@ stages:
       - script: |
           echo Starting deployment...
 
-          echo Agent.WorkFolder = %Agent.WorkFolder%
+          echo Agent.WorkFolder = $(Agent.WorkFolder)
+          
           echo Listing work folder contents:
-          dir "%Agent.WorkFolder%"
+          dir "$(Agent.WorkFolder)"
 
           echo Listing drop folder contents (if exists):
-          dir "%Agent.WorkFolder%/drop"
+          dir "$(Agent.WorkFolder)\drop"
 
-          set ARTIFACT_PATH=%Agent.WorkFolder%/drop
+          :: Use quotes to handle paths with spaces and use backslashes
+          set "ARTIFACT_PATH=$(Agent.WorkFolder)\drop"
 
           echo Checking for artifact at: %ARTIFACT_PATH%
 
           if exist "%ARTIFACT_PATH%" (
-              echo Artifact 'drop' found at: %ARTIFACT_PATH%
-              echo Deploying application...
+            echo Artifact 'drop' found at: %ARTIFACT_PATH%
+            echo Deploying application...
+            :: Add your actual deployment command here
           ) else (
-              echo Artifact 'drop' not found. Deployment cannot continue.
-              exit /b 1
+            echo Artifact 'drop' not found at %ARTIFACT_PATH%. Deployment cannot continue.
+            exit /b 1
           )
-
-          echo Deployment step completed.
         displayName: "Deployment Step"
