@@ -3,7 +3,7 @@ trigger: none
 resources:
   pipelines:
   - pipeline: validation
-    source: Nabanita-Sahu.Practice
+    source: Nabanita-Sahu.Validate
     project: PipelineDemo
     branch: main
     trigger: true
@@ -46,4 +46,4 @@ stages:
           echo Deployment step completed.
         displayName: "Deployment Step" 
         #added this fot Triggering CI/CD test
-        
+
