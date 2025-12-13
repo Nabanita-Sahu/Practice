@@ -23,28 +23,32 @@ stages:
         inputs:
           source: specific
           project: PipelineDemo
-          pipeline: validation                 # MUST match alias
+          pipeline: validation
           runVersion: latestFromTriggeringPipeline
           artifact: drop
-          path: $(Pipeline.Workspace)/drop  # Force artifact into /drop folder
+          path: $(Pipeline.Workspace)/drop
 
       - script: |
           echo "Starting deployment..."
 
-          set "ARTIFACT_PATH=$(Pipeline.Workspace)\drop"
+          echo "Pipeline.Workspace = $(Pipeline.Workspace)"
+          echo "Listing workspace contents:"
+          ls -la "$(Pipeline.Workspace)"
 
-          echo Checking for artifact at: %ARTIFACT_PATH%
+          echo "Listing drop folder contents (if exists):"
+          ls -la "$(Pipeline.Workspace)/drop" || echo "Drop folder not found yet"
 
-          if exist "%ARTIFACT_PATH%" (
-              echo Artifact 'drop' found at: %ARTIFACT_PATH%
-              echo Deploying application...
-          ) else (
-              echo Artifact 'drop' not found. Skipping deployment.
-              exit /b 1
-          )
+          ARTIFACT_PATH="$(Pipeline.Workspace)/drop"
 
-          echo Deployment step completed.
-        displayName: "Deployment Step" 
-        #added this fot Triggering CI/CD test
-        #testing
+          echo "Checking for artifact at: $ARTIFACT_PATH"
 
+          if [ -d "$ARTIFACT_PATH" ]; then
+              echo " Artifact 'drop' found at: $ARTIFACT_PATH"
+              echo "Deploying application..."
+          else
+              echo " Artifact 'drop' not found. Deployment cannot continue."
+              exit 1
+          fi
+
+          echo " Deployment step completed."
+        displayName: "Deployment Step"
