@@ -2,7 +2,7 @@ trigger: none
 
 resources:
   pipelines:
-  - pipeline: validation                # ✅ This is the alias name
+  - pipeline: validation
     source: Nabanita-Sahu.Validate
     project: PipelineDemo
     branch: main
@@ -21,12 +21,12 @@ stages:
       - task: DownloadPipelineArtifact@2
         displayName: "Download build artifacts"
         inputs:
-          source: specific              # ✅ Required when using runVersion
+          source: specific
           project: PipelineDemo
-          pipeline: validation          # ✅ Use the alias from resources.pipelines
+          pipeline: validation                 # MUST match alias
           runVersion: latestFromTriggeringPipeline
           artifact: drop
-          path: $(Pipeline.Workspace)/drop   # ✅ Force artifact into /drop folder
+          path: $(Pipeline.Workspace)/drop  # Force artifact into /drop folder
 
       - script: |
           echo "Starting deployment..."
@@ -38,7 +38,6 @@ stages:
           if exist "%ARTIFACT_PATH%" (
               echo Artifact 'drop' found at: %ARTIFACT_PATH%
               echo Deploying application...
-              REM Add actual deployment commands here
           ) else (
               echo Artifact 'drop' not found. Skipping deployment.
               exit /b 1

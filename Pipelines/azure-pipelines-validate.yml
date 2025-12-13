@@ -60,15 +60,17 @@ stages:
         testResultsFiles: '**/TestResults/*.xml'
         failTaskOnFailedTests: true
 
-    # ✅ Publish application output
+    # ✅ Publish ONLY the application output
     - task: DotNetCoreCLI@2
       displayName: "Publish application"
       inputs:
         command: 'publish'
-        projects: '**/*.csproj'
+        projects: '$(FUNCTION_APP_WORKING_DIRECTORY)/$(FUNCTION_APP_PROJECT_NAME).csproj'
         arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
 
-    # ✅ Upload artifacts (modern syntax)
-    - publish: $(Build.ArtifactStagingDirectory)
-      artifact: drop
+    # ✅ Upload artifacts using PublishPipelineArtifact (required for pipeline triggers)
+    - task: PublishPipelineArtifact@1
       displayName: "Publish build artifacts"
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)'
+        artifact: 'drop'
