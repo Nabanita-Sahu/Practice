@@ -24,7 +24,7 @@ stages:
           source: specific
           project: PipelineDemo
           pipeline: validation
-          runVersion: latestFromTriggeringPipeline
+          runVersion: latest
           artifact: drop
           path: $(Pipeline.Workspace)/drop
 
