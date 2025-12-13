@@ -3,7 +3,7 @@ trigger: none
 resources:
   pipelines:
   - pipeline: validation
-    source: Nabanita-Sahu.Validate
+    source: Nabanita-Sahu.Practice
     project: PipelineDemo
     branch: main
     trigger: true
