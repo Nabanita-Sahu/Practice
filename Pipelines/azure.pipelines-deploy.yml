@@ -21,8 +21,10 @@ stages:
       - task: DownloadPipelineArtifact@2
         displayName: "Download build artifacts"
         inputs:
-          source: current
-          runVersion: latestFromTriggeringBuild
+          buildType: specific
+          project: PipelineDemo
+          pipeline: Nabanita-Sahu.Validate
+          runId: 36
           artifact: drop
           path: $(Pipeline.Workspace)
 
