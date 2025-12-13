@@ -23,32 +23,32 @@ stages:
         inputs:
           source: specific
           project: PipelineDemo
-          pipeline: Nabanita-Sahu.Validate     # actual pipeline name
+          pipeline: Nabanita-Sahu.Validate
           runVersion: latest
           artifact: drop
           path: $(Pipeline.Workspace)/drop
 
       - script: |
-          echo "Starting deployment..."
+          echo Starting deployment...
 
-          echo "Pipeline.Workspace = $(Pipeline.Workspace)"
-          echo "Listing workspace contents:"
-          ls -la "$(Pipeline.Workspace)"
+          echo Pipeline.Workspace = %Pipeline.Workspace%
+          echo Listing workspace contents:
+          dir "%Pipeline.Workspace%"
 
-          echo "Listing drop folder contents (if exists):"
-          ls -la "$(Pipeline.Workspace)/drop" || echo "Drop folder not found yet"
+          echo Listing drop folder contents (if exists):
+          dir "%Pipeline.Workspace%\drop"
 
-          ARTIFACT_PATH="$(Pipeline.Workspace)/drop"
+          set ARTIFACT_PATH=%Pipeline.Workspace%\drop
 
-          echo "Checking for artifact at: $ARTIFACT_PATH"
+          echo Checking for artifact at: %ARTIFACT_PATH%
 
-          if [ -d "$ARTIFACT_PATH" ]; then
-              echo " Artifact 'drop' found at: $ARTIFACT_PATH"
-              echo "Deploying application..."
-          else
-              echo " Artifact 'drop' not found. Deployment cannot continue."
-              exit 1
-          fi
+          if exist "%ARTIFACT_PATH%" (
+              echo Artifact 'drop' found at: %ARTIFACT_PATH%
+              echo Deploying application...
+          ) else (
+              echo Artifact 'drop' not found. Deployment cannot continue.
+              exit /b 1
+          )
 
-          echo " Deployment step completed."
+          echo Deployment step completed.
         displayName: "Deployment Step"
