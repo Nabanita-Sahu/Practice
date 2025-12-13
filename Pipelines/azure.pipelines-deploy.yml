@@ -38,7 +38,7 @@ stages:
           echo Listing drop folder contents (if exists):
           dir "%Agent.WorkFolder%\drop"
 
-          set ARTIFACT_PATH=%Agent.WorkFolder%\drop
+          set ARTIFACT_PATH=%Agent.WorkFolder%
 
           echo Checking for artifact at: %ARTIFACT_PATH%
 
