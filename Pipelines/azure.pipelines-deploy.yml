@@ -23,7 +23,7 @@ stages:
         inputs:
           source: specific
           project: PipelineDemo
-          pipeline: validation
+          pipeline: Nabanita-Sahu.Validate     # actual pipeline name
           runVersion: latest
           artifact: drop
           path: $(Pipeline.Workspace)/drop
